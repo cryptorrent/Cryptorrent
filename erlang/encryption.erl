@@ -2,6 +2,9 @@
 -export([public_encrypt/2,public_decrypt/2,private_encrypt/2,private_decrypt/2]).
 -import(crypto).
 
+
+%% REDO with public_key module
+
 %%
 %% rsa_public_encrypt(PlainText, PublicKey, Padding) -> ChipherText
 %% rsa_public_decrypt(ChipherText, PublicKey, Padding) -> PlainText

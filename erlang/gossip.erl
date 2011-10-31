@@ -7,6 +7,14 @@
 -import(gen_udp).
 
 
+%% (‘file_request’, {file request uuid}, {public_key}, {SORList}, {Manager IP}, {file name})
+%% (‘have_file’, {Source-generated uuid}, {OR})
+%% (‘send_chunk’, {Source-generated uuid}, {OR from SORList}, {start and end points of chunk})
+%% (‘chunk’, {Encrypted File Descriptor: {file request uuid}, {start and end points of chunk}, {chunk}}, {OR from SORList})
+
+
+
+
 
 %% Gossip Manager %%
 
@@ -28,9 +36,20 @@ generate_gossip_set(Hosts, FileRequsts) ->
     pass,
     {generated, Gossip}.
 
-process_gossip(Gossip, Hosts, FileRequsts) ->
-    pass,
+process_gossip([], Hosts, FileRequests)
     gossip_manager(Hosts, FileRequsts).
+
+process_gossip([Gossip|T], Hosts, FileRequests) ->
+    case Gossip of
+	{file_request, Uuid, PublicKey, SORList, ManagerIP, FileName} ->
+	    pass;
+	{have_file, Suuid, Oroute} ->
+	    pass;
+	{send_chunk, Suuid, ORtoSink, Start, End} ->
+	    pass;
+	{chunk, FileDescriptor, Oroute} ->
+	    pass
+    process_gossip(T, Hosts, FileRequests).
 
 
 
@@ -63,6 +82,7 @@ initiate_gossip(GossipManager) ->
 
 gossip(Gossip, Host) ->
     {ok, Socket} = gen_udp:open(0, [binary]),
+    
     ok = gen_udp:send(Socket, Host, 8099,
                       term_to_binary(Gossip)),
     InGossip = receive
@@ -80,3 +100,7 @@ generate_gossip(GossipManager) ->
 	{generated, Gossip} ->
 	    Gossip
     end.
+
+
+
+%% Utility %%
